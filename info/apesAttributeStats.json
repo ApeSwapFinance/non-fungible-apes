@@ -1,0 +1,206 @@
+[
+    {
+       "feature":"Gold",
+       "occurances":15
+    },
+    {
+       "feature":"Sans Red",
+       "occurances":18
+    },
+    {
+       "feature":"Grape Purple",
+       "occurances":19
+    },
+    {
+       "feature":"Pale Zombie",
+       "occurances":22
+    },
+    {
+       "feature":"Avatar",
+       "occurances":23
+    },
+    {
+       "feature":"Albino",
+       "occurances":24
+    },
+    {
+       "feature":"Gold Tooth",
+       "occurances":25
+    },
+    {
+       "feature":"Pale Cowboy",
+       "occurances":28
+    },
+    {
+       "feature":"Open Smile",
+       "occurances":30
+    },
+    {
+       "feature":"Lazer",
+       "occurances":32
+    },
+    {
+       "feature":"Earings",
+       "occurances":50
+    },
+    {
+       "feature":"Red",
+       "occurances":74
+    },
+    {
+       "feature":"Green Grey",
+       "occurances":86
+    },
+    {
+       "feature":"Sweat Band",
+       "occurances":89
+    },
+    {
+       "feature":"Sans",
+       "occurances":89
+    },
+    {
+       "feature":"Blood Orange",
+       "occurances":90
+    },
+    {
+       "feature":"Visor",
+       "occurances":91
+    },
+    {
+       "feature":"Pink Sunglasses",
+       "occurances":92
+    },
+    {
+       "feature":"Smoke Grey",
+       "occurances":93
+    },
+    {
+       "feature":"Brown",
+       "occurances":93
+    },
+    {
+       "feature":"Closed",
+       "occurances":95
+    },
+    {
+       "feature":"Highlighter Blue",
+       "occurances":95
+    },
+    {
+       "feature":"Pearl",
+       "occurances":96
+    },
+    {
+       "feature":"Normal",
+       "occurances":96
+    },
+    {
+       "feature":"Pale Pink",
+       "occurances":97
+    },
+    {
+       "feature":"Moon Blue",
+       "occurances":98
+    },
+    {
+       "feature":"Astronaut",
+       "occurances":100
+    },
+    {
+       "feature":"Burnt Orange",
+       "occurances":100
+    },
+    {
+       "feature":"VR Goggles",
+       "occurances":100
+    },
+    {
+       "feature":"Red Tassle",
+       "occurances":102
+    },
+    {
+       "feature":"Brown Hair",
+       "occurances":103
+    },
+    {
+       "feature":"Red Sunglasses",
+       "occurances":104
+    },
+    {
+       "feature":"Dark Cowboy",
+       "occurances":104
+    },
+    {
+       "feature":"ApeSwap Brown",
+       "occurances":105
+    },
+    {
+       "feature":"Ripe Banana",
+       "occurances":106
+    },
+    {
+       "feature":"Shades",
+       "occurances":107
+    },
+    {
+       "feature":"Cop",
+       "occurances":113
+    },
+    {
+       "feature":"Banana Hair",
+       "occurances":119
+    },
+    {
+       "feature":"Third Eye",
+       "occurances":128
+    },
+    {
+       "feature":"Zombie Purple",
+       "occurances":144
+    },
+    {
+       "feature":"Army Green",
+       "occurances":155
+    },
+    {
+       "feature":"Maroon",
+       "occurances":161
+    },
+    {
+       "feature":"Orangutan",
+       "occurances":161
+    },
+    {
+       "feature":"Dark Grey",
+       "occurances":161
+    },
+    {
+       "feature":"Hazel",
+       "occurances":175
+    },
+    {
+       "feature":"Open",
+       "occurances":180
+    },
+    {
+       "feature":"Buck Teeth",
+       "occurances":182
+    },
+    {
+       "feature":"Sad",
+       "occurances":189
+    },
+    {
+       "feature":"Stale",
+       "occurances":209
+    },
+    {
+       "feature":"Happy",
+       "occurances":282
+    },
+    {
+       "feature":"Main Frame",
+       "occurances":950
+    }
+ ]
