@@ -16,11 +16,11 @@ Each ape has a cummulative score generated based on the combined rarity of its c
 
 We then categorize that score into one of five different tiers to determine overall rarity. The rarity tiers are as follows:
 
-**Common Chimps**: Tier 1 (500 NFAs) - Most common
-**Original Orangutans**: Tier 2 (250 NFAs)
-**Alluring Apes**: Tier 3 (150 NFAs)
-**Prime Primates**: Tier 4 (70 NFAs)
-**Magic Monkeys**: Tier 5 (30 NFAs) - Most rare
+- **Common Chimps**: Tier 1 (500 NFAs) - Most common
+- **Original Orangutans**: Tier 2 (250 NFAs)
+- **Alluring Apes**: Tier 3 (150 NFAs)
+- **Prime Primates**: Tier 4 (70 NFAs)
+- **Magic Monkeys**: Tier 5 (30 NFAs) - Most rare
 
 Each characteristic has a different likelihood of occurring in each ape generation, making some characteristics much more rare than others. For instance, only 32 apes have lazer eyes and only 107 apes have sunglasses. You can see the full breakdown of how many occurances each characteristic has in the `apesAttributeStats.json` file.
 
