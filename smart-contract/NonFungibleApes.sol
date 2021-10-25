@@ -18,6 +18,20 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
 
     string private _baseTokenURI;
 
+    struct NFADetails {
+        uint256 rarity;
+        string name;
+        string face;
+        string faceColor;
+        string baseColor;
+        string frame;
+        string mouth;
+        string eyes;
+        string hat;
+    }
+
+    mapping(uint256 => NFADetails) getNFADetailsById;
+
     constructor(string memory name, string memory symbol, string memory baseTokenURI) ERC721(name, symbol) {
         _baseTokenURI = baseTokenURI;
 
@@ -29,10 +43,29 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
         return _baseTokenURI;
     }
 
-    function mint(address to) public virtual {
+    function checkNFARarity(uint256 tokenId, uint256 rarity) external view returns (bool) {
+        if(rarity > 5 || tokenId >= _tokenIdTracker.current()) {
+            return false;
+        }
+        NFADetails memory currentNFADetails = getNFADetailsById[tokenId];
+        return currentNFADetails.rarity == rarity;
+    }
+
+    function mint(address to, uint256 rarity, string memory name, string[7] memory attributes) public virtual {
         require(hasRole(MINTER_ROLE, _msgSender()), "NonFungibleApes: must have minter role to mint");
 
         _mint(to, _tokenIdTracker.current());
+        getNFADetailsById[_tokenIdTracker.current()] = NFADetails(
+            rarity,
+            name,
+            attributes[0], // face
+            attributes[1], // faceColor
+            attributes[2], // baseColor
+            attributes[3], // frame
+            attributes[4], // mouth
+            attributes[5], // eyes
+            attributes[6]  // hat
+        );
         _tokenIdTracker.increment();
     }
 
