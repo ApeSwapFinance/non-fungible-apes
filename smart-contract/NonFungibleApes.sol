@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.3;
 
 /*
  * ApeSwap Finance
@@ -18,7 +18,7 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, ERC721Enumerable {
+contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, ERC721URIStorage {
     using Counters for Counters.Counter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -26,9 +26,10 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, 
     Counters.Counter private _tokenIdTracker;
 
     string private _baseTokenURI;
-
+    /// @notice Collection of NFA details to describe each NFA
     struct NFADetails {
-        uint256 rarity;
+        uint128 rarityTier;
+        uint128 rarityOverall;
         string name;
         string face;
         string faceColor;
@@ -38,8 +39,8 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, 
         string eyes;
         string hat;
     }
-
-    mapping(uint256 => NFADetails) getNFADetailsById;
+    /// @notice Use the NFA tokenId to read NFA details
+    mapping(uint256 => NFADetails) public getNFADetailsById;
 
     constructor(string memory name, string memory symbol, string memory baseTokenURI) ERC721(name, symbol) {
         _baseTokenURI = baseTokenURI;
@@ -48,23 +49,39 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, 
         _setupRole(MINTER_ROLE, _msgSender());
     }
 
-    function _baseURI() internal view virtual override returns (string memory) {
-        return _baseTokenURI;
-    }
-
-    function checkNFARarity(uint256 tokenId, uint256 rarity) external view returns (bool) {
+    /// @notice Check if the NFA of a specific ID is of a specific rarityTier
+    /// @param tokenId The ID of the NFA to check
+    /// @param rarityTier The rarityTier to check against the tokenId
+    /// @return (bool) 
+    function isNfaOfRarityTier(uint256 tokenId, uint256 rarityTier) external view returns (bool) {
         if(!_exists(tokenId)) {
             return false;
         }
         NFADetails memory currentNFADetails = getNFADetailsById[tokenId];
-        return currentNFADetails.rarity == rarity;
+        return currentNFADetails.rarityTier == rarityTier;
     }
 
+    /// @notice mint a new NFA to an address
+    /// @dev must be called by an account with MINTER_ROLE
+    /// @param to Address to mint the NFA to
+    /// @param uri The uri link to a JSON schema defining the NFA
+    /// @param name Name of the NFA
+    /// @param rarities Array of rarity details
+    ///   rarities[0] rarityTier
+    ///   rarities[1] rarityOverall
+    /// @param attributes Array of string values which represent the attributes of the NFA
+    ///   attributes[0] face
+    ///   attributes[1] faceColor
+    ///   attributes[2] baseColor
+    ///   attributes[3] frame
+    ///   attributes[4] mouth
+    ///   attributes[5] eyes
+    ///   attributes[6] hat
     function mint(
         address to, 
         string memory uri, 
-        uint256 rarity, 
         string memory name, 
+        uint128[2] memory rarities, 
         string[7] memory attributes
     ) public virtual {
         require(hasRole(MINTER_ROLE, _msgSender()), "NonFungibleApes: must have minter role to mint");
@@ -72,7 +89,8 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, 
         _mint(to, currentTokenId);
         _setTokenURI(currentTokenId, uri);
         getNFADetailsById[currentTokenId] = NFADetails(
-            rarity,
+            rarities[0], // rarityTier
+            rarities[1], // rarityOverall
             name,
             attributes[0], // face
             attributes[1], // faceColor
@@ -85,6 +103,8 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, 
         _tokenIdTracker.increment();
     }
 
+    /// @notice Get the URI for a specific NFA id
+    /// @param tokenId The ID of an NFA to receive the URI for
     function tokenURI(uint256 tokenId)
         public
         view
@@ -92,6 +112,10 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, 
         returns (string memory)
     {
         return super.tokenURI(tokenId);
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseTokenURI;
     }
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
