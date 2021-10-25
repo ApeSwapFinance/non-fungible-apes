@@ -1,15 +1,24 @@
-// ApeSwap's NonFungibleApes
-
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+/*
+ * ApeSwap Finance
+ * App:             https://apeswap.finance
+ * Medium:          https://ape-swap.medium.com
+ * Twitter:         https://twitter.com/ape_swap
+ * Telegram:        https://t.me/ape_swap
+ * Announcements:   https://t.me/ape_swap_news
+ * GitHub:          https://github.com/ApeSwapFinance
+ */
+
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, ERC721Burnable {
+contract NonFungibleApes is Context, AccessControlEnumerable, ERC721URIStorage, ERC721Enumerable {
     using Counters for Counters.Counter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -44,18 +53,25 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
     }
 
     function checkNFARarity(uint256 tokenId, uint256 rarity) external view returns (bool) {
-        if(rarity > 5 || tokenId >= _tokenIdTracker.current()) {
+        if(!_exists(tokenId)) {
             return false;
         }
         NFADetails memory currentNFADetails = getNFADetailsById[tokenId];
         return currentNFADetails.rarity == rarity;
     }
 
-    function mint(address to, uint256 rarity, string memory name, string[7] memory attributes) public virtual {
+    function mint(
+        address to, 
+        string memory uri, 
+        uint256 rarity, 
+        string memory name, 
+        string[7] memory attributes
+    ) public virtual {
         require(hasRole(MINTER_ROLE, _msgSender()), "NonFungibleApes: must have minter role to mint");
-
-        _mint(to, _tokenIdTracker.current());
-        getNFADetailsById[_tokenIdTracker.current()] = NFADetails(
+        uint256 currentTokenId = _tokenIdTracker.current();
+        _mint(to, currentTokenId);
+        _setTokenURI(currentTokenId, uri);
+        getNFADetailsById[currentTokenId] = NFADetails(
             rarity,
             name,
             attributes[0], // face
@@ -67,6 +83,19 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
             attributes[6]  // hat
         );
         _tokenIdTracker.increment();
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721, ERC721Enumerable) {
