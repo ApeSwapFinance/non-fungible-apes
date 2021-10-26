@@ -24,7 +24,6 @@ const nfaContract = await NonFungibleApes.at(NonFungibleApes.address);
 ///   attributes[5] hat
 await nfaContract.mint(
     toAddress,
-    '', // URI should be blank
     currentNfa.name,
     [
         currentNfaAttributes.rarityTierNumber,

@@ -12,13 +12,12 @@ pragma solidity 0.8.3;
  */
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, ERC721URIStorage {
+contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable {
     using Counters for Counters.Counter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -63,7 +62,6 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
     /// @notice mint a new NFA to an address
     /// @dev must be called by an account with MINTER_ROLE
     /// @param to Address to mint the NFA to
-    /// @param uri The uri link to a JSON schema defining the NFA
     /// @param name Name of the NFA
     /// @param rarities Array of rarity details
     ///   rarities[0] rarityTier
@@ -77,7 +75,6 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
     ///   attributes[5] hat
     function mint(
         address to, 
-        string memory uri, 
         string memory name, 
         uint128[2] memory rarities, 
         string[6] memory attributes
@@ -85,7 +82,6 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
         require(hasRole(MINTER_ROLE, _msgSender()), "NonFungibleApes: must have minter role to mint");
         uint256 currentTokenId = _tokenIdTracker.current();
         _mint(to, currentTokenId);
-        _setTokenURI(currentTokenId, uri);
         getNFADetailsById[currentTokenId] = NFADetails(
             rarities[0], // rarityTier
             rarities[1], // rarityOverall
@@ -105,7 +101,7 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
     function tokenURI(uint256 tokenId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721)
         returns (string memory)
     {
         return super.tokenURI(tokenId);
@@ -115,15 +111,11 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
         return _baseTokenURI;
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
-        super._burn(tokenId);
-    }
-
-    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721, ERC721Enumerable) {
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal virtual override(ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlEnumerable, ERC721, ERC721Enumerable) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(AccessControlEnumerable, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 }
