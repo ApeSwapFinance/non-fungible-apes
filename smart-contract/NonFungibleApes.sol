@@ -31,7 +31,6 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
         uint128 rarityTier;
         uint128 rarityOverall;
         string name;
-        string face;
         string faceColor;
         string baseColor;
         string frame;
@@ -70,19 +69,18 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
     ///   rarities[0] rarityTier
     ///   rarities[1] rarityOverall
     /// @param attributes Array of string values which represent the attributes of the NFA
-    ///   attributes[0] face
-    ///   attributes[1] faceColor
-    ///   attributes[2] baseColor
-    ///   attributes[3] frame
-    ///   attributes[4] mouth
-    ///   attributes[5] eyes
-    ///   attributes[6] hat
+    ///   attributes[0] faceColor
+    ///   attributes[1] baseColor
+    ///   attributes[2] frame
+    ///   attributes[3] mouth
+    ///   attributes[4] eyes
+    ///   attributes[5] hat
     function mint(
         address to, 
         string memory uri, 
         string memory name, 
         uint128[2] memory rarities, 
-        string[7] memory attributes
+        string[6] memory attributes
     ) public virtual {
         require(hasRole(MINTER_ROLE, _msgSender()), "NonFungibleApes: must have minter role to mint");
         uint256 currentTokenId = _tokenIdTracker.current();
@@ -92,13 +90,12 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable, 
             rarities[0], // rarityTier
             rarities[1], // rarityOverall
             name,
-            attributes[0], // face
-            attributes[1], // faceColor
-            attributes[2], // baseColor
-            attributes[3], // frame
-            attributes[4], // mouth
-            attributes[5], // eyes
-            attributes[6]  // hat
+            attributes[0], // faceColor
+            attributes[1], // baseColor
+            attributes[2], // frame
+            attributes[3], // mouth
+            attributes[4], // eyes
+            attributes[5]  // hat
         );
         _tokenIdTracker.increment();
     }
