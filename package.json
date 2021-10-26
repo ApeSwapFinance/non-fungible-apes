@@ -8,6 +8,7 @@
   },
   "scripts": {
     "test": "mocha",
+    "compile": "truffle compile",
     "migrate:dev": "truffle migrate --network development",
     "migrate:bsc-testnet": "truffle migrate --network bsc-testnet",
     "migrate:bsc": "truffle migrate --network bsc",
