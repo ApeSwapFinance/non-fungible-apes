@@ -9,11 +9,11 @@ const providerByChainId: { [key:number]: { provider: string; env: 'DEV_DEPLOYER_
     },
     56: {
         provider: "https://bsc-dataseed1.binance.org",
-        env: 'TESTNET_DEPLOYER_KEY',
+        env: 'MAINNET_DEPLOYER_KEY',
     },
     97: {
         provider: "https://data-seed-prebsc-1-s1.binance.org:8545",
-        env: 'MAINNET_DEPLOYER_KEY',
+        env: 'TESTNET_DEPLOYER_KEY',
     },
 }
 

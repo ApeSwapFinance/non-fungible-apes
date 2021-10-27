@@ -4,32 +4,25 @@ import { getSigner } from './networks';
 import nfaDataArray from '../info/apesData.json';
 import { writeJSONToFileWithDate } from '../lib/fileHandler';
 
-// const NFA_CONTRACT_ADDRESS = '0xffc9785E64E759995233Fd5E7431dF370e790402'; // testnet 1
-const NFA_CONTRACT_ADDRESS = '0xFe14FA95364A8B74f0d3F5b90426229Ea22a6874'; // dev
-
-
 const unMintedTokens: any[] = [];
 const txs: any[] = [];
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 // const mintNfa = async (nonce) => {
 const mintNfa = async (nfaContract: ethers.Contract, id: number, toAddress: string, nonce?: number) => {
     const currentNfaDetails = nfaDataArray[id];
     const currentNfaAttributes = currentNfaDetails.attributes;
 
+    let isAlreadyTokenId = false;
     try {
         // This will fail if it's not a valid id
-        const isAlreadyTokenId = await nfaContract.ownerOf(id);
-        if (isAlreadyTokenId) {
-            unMintedTokens.push(id);
-            console.error(`NFA id ${id} has already been minted! Skipping minting!`);
-            return null;
-        }
+        isAlreadyTokenId = await nfaContract.ownerOf(id);
     } catch (e) {
         // If the token has not been created the call will fail b/c it requires that the id has been created
+    }
+
+    if (isAlreadyTokenId) {
+        unMintedTokens.push(id);
+        throw new Error(`$NFA id ${id} has already been minted!`);
     }
 
     /// @notice mint a new NFA to an address
@@ -66,9 +59,13 @@ const mintNfa = async (nfaContract: ethers.Contract, id: number, toAddress: stri
             {
                 gasPrice: 30000000000,
                 gasLimit: 1000000,
-                ...(nonce ? {nonce} : {})
+                ...(nonce ? { nonce } : {})
             }
         );
+
+        const receipt = await tx.wait();
+        const status = receipt.status ? 'SUCCESS' : 'REVERT'
+        console.log(`Received receipt for id ${id} ${status}: ${receipt.transactionHash}`)
 
         tx.gasPrice = tx.gasPrice.toNumber();
         tx.gasLimit = tx.gasLimit.toNumber();
@@ -80,72 +77,100 @@ const mintNfa = async (nfaContract: ethers.Contract, id: number, toAddress: stri
             id,
             error: e,
         });
-        return `${id} error`;
+        throw new Error(`${id} mint tx error: ${e})`);
     }
 
 
+    try {
+        const nfaDetails = await nfaContract.getNFADetailsById(id);
 
-    const nfaDetails = await nfaContract.getNFADetailsById(id);
+        // Double check that the minted NFAs match the data by reverse checking output with a diff
+        const apeDataCheck = {
+            index: id,
+            name: nfaDetails.name,
+            image: currentNfaDetails.image,
+            uri: currentNfaDetails.uri,
+            attributes: {
+                faceColor: nfaDetails.faceColor,
+                baseColor: nfaDetails.baseColor,
+                frames: nfaDetails.frame,
+                mouths: nfaDetails.mouth,
+                eyes: nfaDetails.eyes,
+                hats: nfaDetails.hat,
+                rarityScore: currentNfaDetails.attributes.rarityScore,
+                rarityTierNumber: nfaDetails.rarityTier.toNumber(),
+                rarityTierName: currentNfaDetails.attributes.rarityTierName,
+                rarityOverallRank: nfaDetails.rarityOverall.toNumber(),
+            }
 
-    // Double check that the minted NFAs match the data by reverse checking output with a diff
-    const apeDataCheck = {
-        index: id,
-        name: nfaDetails.name,
-        image: currentNfaDetails.image,
-        uri: currentNfaDetails.uri,
-        attributes: {
-            faceColor: nfaDetails.faceColor,
-            baseColor: nfaDetails.baseColor,
-            frames: nfaDetails.frame,
-            mouths: nfaDetails.mouth,
-            eyes: nfaDetails.eyes,
-            hats: nfaDetails.hat,
-            rarityScore: currentNfaDetails.attributes.rarityScore,
-            rarityTierNumber: nfaDetails.rarityTier.toNumber(),
-            rarityTierName: currentNfaDetails.attributes.rarityTierName,
-            rarityOverallRank: nfaDetails.rarityOverall.toNumber(),
         }
 
+        return apeDataCheck;
+    } catch (e) {
+        unMintedTokens.push({
+            id,
+            error: e,
+        });
+        return `${id} getNFADetailsById tx error`;
     }
-
-    return apeDataCheck;
 }
 
-const mintAllNfas = async () => {
+interface ApeData {
+    index: number;
+    name: any;
+    image: string;
+    uri: string;
+    attributes: {
+        faceColor: any;
+        baseColor: any;
+        frames: any;
+        mouths: any;
+        eyes: any;
+        hats: any;
+        rarityScore: string;
+        rarityTierNumber: any;
+        rarityTierName: string;
+        rarityOverallRank: any;
+    }
+}
+
+const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSize = 30) => {
     // Nonce manager encapsules a signer. It can be used to manually increment the nonce on each tx
-    const signer = getSigner(0);
+    const signer = getSigner(chainId);
     const signerAddress = await signer.getAddress();
     console.dir({ signerAddress });
 
 
     const nfaContract = new ethers.Contract(
-        NFA_CONTRACT_ADDRESS,
+        nfaContractAddress,
         NonFungibleApesArtifact.abi,
         signer
     ) as any
 
-
-    let promises = []
+    let apeDataChecks: Array<string | ApeData> = [];
+    let batch = [];
     let nonce = await signer.getTransactionCount();
-
     for (let i = 0; i < nfaDataArray.length; i++) {
-        promises.push(mintNfa(nfaContract, i, signerAddress, nonce));
+        batch.push(mintNfa(nfaContract, i, signerAddress, nonce));
         nonce++;
-        if (i % 30 == 0) {
-            sleep(2000);
+        if (i > 0 && (i % batchSize == 0 || i == nfaDataArray.length - 1)) {
+            const batchData = await Promise.all(batch);
+            apeDataChecks.push(...batchData as any);
+            batch = []
         }
     };
 
-    const apeDataChecks = await Promise.all(promises);
     // Write output: 
-    await writeJSONToFileWithDate(__dirname + '/output/apeDataCheck', apeDataChecks);
-    await writeJSONToFileWithDate(__dirname + '/output/txs', txs);
-    await writeJSONToFileWithDate(__dirname + '/output/unmintedTokens', unMintedTokens);
+    await writeJSONToFileWithDate(__dirname + '/output/apeDataCheck', apeDataChecks.sort((apeA, apeB) => (apeA as any).index > (apeB as any).index ? 1 : -1 )); // Sort acs
+    await writeJSONToFileWithDate(__dirname + '/output/txs', txs.sort((txA, txB) => txA.nfaId > txB.nfaId ? 1 : -1 )); // Sort acs
+    await writeJSONToFileWithDate(__dirname + '/output/unmintedTokens', unMintedTokens.sort((indexA, indexB) => indexA > indexB ? 1 : -1 )); // Sort acs
 };
 
 (async function () {
     try {
-        await mintAllNfas();
+        // TODO: Set chainIds
+        // await mintAllNfas(0, "0xFe14FA95364A8B74f0d3F5b90426229Ea22a6874", 50); // dev
+        await mintAllNfas(97, '0xB40EB000b14f4643B11fc055EA2C27CAA23C914c', 30); // bsc-testnet //TODO: Fresh contract deployed
         console.log('🎉');
         process.exit(0);
     } catch (e) {
