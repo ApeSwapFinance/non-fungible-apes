@@ -18,10 +18,10 @@ function getDeployConfig(network, accounts) {
     } else if (['development'].includes(network)) {
         console.log(`Deploying with development config.`)
         return {
-            admin: "0x6c905b4108A87499CEd1E0498721F2B831c6Ab13", 
+            admin: "", 
             name: "Non Fungible Apes", 
             symbol: "NFA", 
-            baseTokenURI: "",
+            baseTokenURI: "ipfs://QmUN19SQ6bV5FU6vZGGkaefXAr9YkpWrH8iLy3QHFnksF1",
         }
     } else {
         throw new Error(`No config found for network ${network}.`)
