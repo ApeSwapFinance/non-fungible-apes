@@ -23,3 +23,10 @@ We then categorize that score into one of five different tiers to determine over
 - **Magic Monkeys**: Tier 5 (30 NFAs) - Most rare
 
 Each characteristic has a different likelihood of occurring in each ape generation, making some characteristics much more rare than others. For instance, only 32 apes have lazer eyes and only 107 apes have sunglasses. You can see the full breakdown of how many occurrences each characteristic has in the `apesAttributeStats.json` file.
+
+
+## Tools
+
+### Ganache Internal
+Using ganache internal to simulate a mempool locally.
+`yarn add -D ganache@internal`
