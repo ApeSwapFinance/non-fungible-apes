@@ -13,7 +13,10 @@
     "migrate:bsc-testnet": "truffle migrate --network bsc-testnet",
     "migrate:bsc": "truffle migrate --network bsc",
     "verify:bsc-testnet": "truffle run verify NonFungibleApes --network bsc-testnet",
-    "verify:bsc": "truffle run verify NonFungibleApes --network bsc"
+    "verify:bsc": "truffle run verify NonFungibleApes --network bsc",
+    "mint-nfas": "clear && ts-node ./scripts/mintNfas.ts",
+    "mint-nfas:dev": "yarn migrate:dev --reset && yarn mint-nfas",
+    "ganache": "npx ganache --mnemonic hip"
   },
   "repository": {
     "type": "git",
@@ -29,11 +32,16 @@
     "@openzeppelin/contracts": "^4.2.0"
   },
   "devDependencies": {
+    "@ethersproject/experimental": "^5.5.0",
     "@truffle/hdwallet-provider": "^1.5.1",
     "dotenv": "^10.0.0",
+    "ethers": "^5.5.1",
     "fs": "^0.0.1-security",
+    "moment": "^2.29.1",
     "truffle": "^5.4.16",
     "truffle-contract-size": "^2.0.1",
-    "truffle-plugin-verify": "^0.5.15"
+    "truffle-plugin-verify": "^0.5.15",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
   }
 }
