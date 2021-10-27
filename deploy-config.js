@@ -5,15 +5,16 @@ function getDeployConfig(network, accounts) {
             admin: "0x6c905b4108A87499CEd1E0498721F2B831c6Ab13", 
             name: "Non Fungible Apes", 
             symbol: "NFA", 
-            baseTokenURI: "ipfs://QmUN19SQ6bV5FU6vZGGkaefXAr9YkpWrH8iLy3QHFnksF1/", // Production NFA IPFS location
+            baseTokenURI: "ipfs://QmWxfSboc5r9oywP1wj6a8aVHNTor5UNJ8Kpz4YDKia8rf/", // Production NFA IPFS location
         }
     } else if (['bsc-testnet', 'bsc-testnet-fork'].includes(network)) {
         console.log(`Deploying with BSC testnet config.`)
         return {
-            admin: "0xE375D169F8f7bC18a544a6e5e546e63AD7511581", // Testnet
+            // admin: "0xE375D169F8f7bC18a544a6e5e546e63AD7511581", // Testnet
+            admin: "", // Testnet
             name: "Non Fungible Apes", 
             symbol: "NFA", 
-            baseTokenURI: "ipfs://QmUN19SQ6bV5FU6vZGGkaefXAr9YkpWrH8iLy3QHFnksF1/",
+            baseTokenURI: "ipfs://QmWxfSboc5r9oywP1wj6a8aVHNTor5UNJ8Kpz4YDKia8rf/",
         }
     } else if (['development'].includes(network)) {
         console.log(`Deploying with development config.`)
@@ -21,7 +22,7 @@ function getDeployConfig(network, accounts) {
             admin: "", 
             name: "Non Fungible Apes", 
             symbol: "NFA", 
-            baseTokenURI: "ipfs://QmUN19SQ6bV5FU6vZGGkaefXAr9YkpWrH8iLy3QHFnksF1",
+            baseTokenURI: "ipfs://QmWxfSboc5r9oywP1wj6a8aVHNTor5UNJ8Kpz4YDKia8rf",
         }
     } else {
         throw new Error(`No config found for network ${network}.`)
