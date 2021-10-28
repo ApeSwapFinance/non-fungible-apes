@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/ApeSwapFinance/non-fungible-apes#readme",
   "dependencies": {
+    "@defifofum/etherscan-sdk": "0.0.2",
     "@openzeppelin/contracts": "^4.2.0"
   },
   "devDependencies": {
