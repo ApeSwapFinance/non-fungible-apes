@@ -4,13 +4,15 @@ interface NfaOwnerDetails {
     nfts: number[];
 }
 
-export function getNfaOwnerAllocation(filePath = '../input/nfaOwners.json'): NfaOwnerDetails[] {
+export const APE_DATA_PATH = '../input/nfaOwners.json';
+
+export function getNfaOwnerAllocation(filePath = APE_DATA_PATH): NfaOwnerDetails[] {
     const nfaAllocation = require(filePath);
     return nfaAllocation;
 }
 
 export function getNfaOwnerArray(filePath?: string): string[] {
-    const nfaAllocation: NfaOwnerDetails[] = getNfaOwnerAllocation();
+    const nfaAllocation: NfaOwnerDetails[] = getNfaOwnerAllocation(filePath);
     let nfaOwners: any[] = Array.from(Array(1000).keys());
     let nfaCount = 0;
     // Loop through each address

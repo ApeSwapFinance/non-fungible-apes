@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import NonFungibleApesArtifact from "../build/contracts/NonFungibleApes.json";
+import NonFungibleApesV2Artifact from "../build/contracts/NonFungibleApesV2.json";
 import { getSigner } from './networks';
 import nfaDataArray from '../info/apesData.json';
 import { writeJSONToFileWithDate } from './helpers/fileHandler';
@@ -59,7 +59,8 @@ const mintNfa = async (nfaContract: ethers.Contract, id: number, toAddress: stri
                 currentNfaAttributes.hats,
             ],
             {
-                gasPrice: 30000000000,
+                // TODO: set gas price in config
+                gasPrice: 7000000000,
                 gasLimit: 1000000,
                 ...(nonce ? { nonce } : {})
             }
@@ -140,7 +141,8 @@ interface ApeData {
 }
 
 const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSize = 30) => {
-    const nfaOwnerArray = await getNfaOwnerArray(`./output/nfaOwners-final.json`);
+    const nfaOwnerArray = await getNfaOwnerArray(`../input/nfaOwners.json`);
+
     // Nonce manager encapsules a signer. It can be used to manually increment the nonce on each tx
     const signer = getSigner(chainId);
     const signerAddress = await signer.getAddress();
@@ -149,14 +151,14 @@ const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSiz
 
     const nfaContract = new ethers.Contract(
         nfaContractAddress,
-        NonFungibleApesArtifact.abi,
+        NonFungibleApesV2Artifact.abi,
         signer
     ) as any
 
     let apeDataChecks: Array<string | ApeData> = [];
     let batch = [];
     let nonce = await signer.getTransactionCount();
-    for (let i = 0; i < nfaDataArray.length; i++) {
+    for (let i = 361; i < nfaDataArray.length; i++) {
         batch.push(mintNfa(nfaContract, i, nfaOwnerArray[i], nonce));
         nonce++;
         if (i > 0 && (i % batchSize == 0 || i == nfaDataArray.length - 1)) {
@@ -176,8 +178,9 @@ const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSiz
 (async function () {
     try {
         // TODO: Set chainIds
-        await mintAllNfas(0, "0xFe14FA95364A8B74f0d3F5b90426229Ea22a6874", 100); // dev
-        // await mintAllNfas(97, '0xB40EB000b14f4643B11fc055EA2C27CAA23C914c', 30); // bsc-testnet //TODO: Fresh contract deployed
+        // await mintAllNfas(0, "0xFe14FA95364A8B74f0d3F5b90426229Ea22a6874", 100); // dev
+        // await mintAllNfas(97, '0x34E9F595c4E00bF3b9149224e3109C9311267620', 30); // bsc-testnet //TODO: Fresh contract deployed
+        await mintAllNfas(56, '0x6afC012783e3a6eF8C5f05F8EeE2eDeF6a052Ec4', 30); // bsc-testnet //TODO: Fresh contract deployed
         console.log('🎉');
         process.exit(0);
     } catch (e) {

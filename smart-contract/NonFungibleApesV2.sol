@@ -8,7 +8,7 @@ pragma solidity 0.8.3;
  * Twitter:         https://twitter.com/ape_swap
  * Telegram:        https://t.me/ape_swap
  * Announcements:   https://t.me/ape_swap_news
- * GitHub:          https://github.com/ApeSwapFinance
+ * GitHub:          https://github.com/ApeSwapFinance 
  */
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -17,7 +17,7 @@ import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable {
+contract NonFungibleApesV2 is Context, AccessControlEnumerable, ERC721Enumerable {
     using Counters for Counters.Counter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -103,17 +103,6 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable {
             attributes[5]  // hat
         );
         _tokenIdTracker.increment();
-    }
-
-    /// @notice Get the URI for a specific NFA id
-    /// @param tokenId The ID of an NFA to receive the URI for
-    function tokenURI(uint256 tokenId)
-        public
-        view
-        override(ERC721)
-        returns (string memory)
-    {
-        return super.tokenURI(tokenId);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
