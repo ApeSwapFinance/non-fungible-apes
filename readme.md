@@ -1,8 +1,8 @@
-# ApeSwap's Official Non Fungible Apes (NFAs)
+# ApeSwap's Official Non Fungible Apes V2 (NFAv2)
 
 Non Fungible Apes (or NFAs) are a cryptographically generated set of 1,000 unique, rare, and immutable apes forked from the original CryptoPunks codebase.
 
-Find the official Non Fungible Apes smart contract deployment at this address: [0x6eca7754007d22d3f557740d06fed4a031befe1e](https://bscscan.com/token/0x6eca7754007d22d3f557740d06fed4a031befe1e)
+Find the official Non Fungible Apes V2 smart contract deployment at this address: [0x6afC012783e3a6eF8C5f05F8EeE2eDeF6a052Ec4](https://bscscan.com/token/0x6afC012783e3a6eF8C5f05F8EeE2eDeF6a052Ec4)
 
 
 ## How Were NFAs Generated?
