@@ -14,7 +14,6 @@ async function checkNfaAddressesForCode() {
     const nfaOwnerAllocation = getNfaOwnerAllocation();
     const accountTypes: any = {};
     for (let i = 0; i < nfaOwnerAllocation.length; i++) {
-    // for (let i = 0; i < 100; i++) {
         const allocation = nfaOwnerAllocation[i];
         const fullContractDetails = await getContractDetailsSafe(etherscanService, allocation.address);
         accountTypes[allocation.address] = fullContractDetails;

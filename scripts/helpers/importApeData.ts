@@ -9,9 +9,10 @@ export function getNfaOwnerAllocation(filePath = '../input/nfaOwners.json'): Nfa
     return nfaAllocation;
 }
 
-export function getNfaOwnerArray(filePath?: string) {
-    const nfaAllocation: NfaOwnerDetails[]  = getNfaOwnerAllocation();
+export function getNfaOwnerArray(filePath?: string): string[] {
+    const nfaAllocation: NfaOwnerDetails[] = getNfaOwnerAllocation();
     let nfaOwners: any[] = Array.from(Array(1000).keys());
+    let nfaCount = 0;
     // Loop through each address
     for (let i = 0; i < nfaAllocation.length; i++) {
         let account = nfaAllocation[i];
@@ -19,12 +20,16 @@ export function getNfaOwnerArray(filePath?: string) {
         for (let j = 0; j < account.nfts.length; j++) {
             // Assign the index to the address that owns the nfa
             nfaOwners[account.nfts[j]] = account.address;
+            nfaCount++;
         }
+    }
+    if (nfaCount != 1000) {
+        throw new Error(`getNfaOwnerArray::NFA count does not equal 1000`);
     }
     return nfaOwners;
 };
 
-export function getNfaOwnerObject(filePath?: string) {
+export function getNfaOwnerObject(filePath?: string): { [key: number]: string } {
     const nfaOwnerArray = getNfaOwnerArray(filePath);
     return Object.assign({}, nfaOwnerArray);
 }
