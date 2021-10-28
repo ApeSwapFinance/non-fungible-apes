@@ -14,7 +14,6 @@
     "migrate:bsc": "truffle migrate --network bsc",
     "verify:bsc-testnet": "truffle run verify NonFungibleApes --network bsc-testnet",
     "verify:bsc": "truffle run verify NonFungibleApes --network bsc",
-    "mint-nfas-sync": "clear && ts-node ./scripts/mintNfasSync.ts",
     "mint-nfas": "clear && ts-node ./scripts/mintNfas.ts",
     "mint-nfas:dev": "yarn migrate:dev --reset && yarn mint-nfas",
     "ganache": "npx ganache --mnemonic hip"
@@ -30,6 +29,7 @@
   },
   "homepage": "https://github.com/ApeSwapFinance/non-fungible-apes#readme",
   "dependencies": {
+    "@defifofum/etherscan-sdk": "0.0.2",
     "@openzeppelin/contracts": "^4.2.0"
   },
   "devDependencies": {

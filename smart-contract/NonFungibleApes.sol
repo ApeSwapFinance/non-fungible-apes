@@ -40,6 +40,8 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable {
     /// @notice Use the NFA tokenId to read NFA details
     mapping(uint256 => NFADetails) public getNFADetailsById;
 
+    event UpdateBaseURI(string indexed previousBaseUri, string indexed newBaseUri);
+
     constructor(string memory name, string memory symbol, string memory baseTokenURI) ERC721(name, symbol) {
         _baseTokenURI = baseTokenURI;
 
@@ -57,6 +59,14 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable {
         }
         NFADetails memory currentNFADetails = getNFADetailsById[tokenId];
         return currentNFADetails.rarityTier == rarityTier;
+    }
+
+    /// @notice Update the baseTokenURI of the NFT
+    /// @dev The admin of this function is expected to renounce ownership once the base url has been tested and is working
+    /// @param baseTokenURI The new bse uri for the contract
+    function updateBaseTokenURI(string memory baseTokenURI) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        emit UpdateBaseURI(_baseTokenURI, baseTokenURI);
+        _baseTokenURI = baseTokenURI;
     }
 
     /// @notice mint a new NFA to an address
@@ -78,8 +88,7 @@ contract NonFungibleApes is Context, AccessControlEnumerable, ERC721Enumerable {
         string memory name, 
         uint128[2] memory rarities, 
         string[6] memory attributes
-    ) public virtual {
-        require(hasRole(MINTER_ROLE, _msgSender()), "NonFungibleApes: must have minter role to mint");
+    ) public virtual onlyRole(MINTER_ROLE) {
         uint256 currentTokenId = _tokenIdTracker.current();
         _mint(to, currentTokenId);
         getNFADetailsById[currentTokenId] = NFADetails(

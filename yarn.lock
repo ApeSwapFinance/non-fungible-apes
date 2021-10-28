@@ -596,6 +596,15 @@
   dependencies:
     "@cspotcode/source-map-consumer" "0.8.0"
 
+"@defifofum/etherscan-sdk@0.0.2":
+  version "0.0.2"
+  resolved "https://npm.pkg.github.com/download/@defifofum/etherscan-sdk/0.0.2/03e7e9e96d73f3de6b659189c99a7c350b237ec0066cb13e8e91772fa622504e#e3ab33a0b98d41075018d87c510b28c9dce60701"
+  integrity sha512-aRvSVKwigCsOUGFO3sLNB8EQMnc0WNk5wW3s4DlP9uc5tt5d2gTf6Cd5yMVDv9whGfZaNNtpHz3HMbcogqbSXw==
+  dependencies:
+    axios "^0.21.1"
+    dotenv "^10.0.0"
+    ethers "^5.4.4"
+
 "@ensdomains/address-encoder@^0.1.7":
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/@ensdomains/address-encoder/-/address-encoder-0.1.9.tgz#f948c485443d9ef7ed2c0c4790e931c33334d02d"
@@ -5759,7 +5768,7 @@ ethers@^4.0.32:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^5.0.13, ethers@^5.5.0, ethers@^5.5.1:
+ethers@^5.0.13, ethers@^5.4.4, ethers@^5.5.0, ethers@^5.5.1:
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.5.1.tgz#d3259a95a42557844aa543906c537106c0406fbf"
   integrity sha512-RodEvUFZI+EmFcE6bwkuJqpCYHazdzeR1nMzg+YWQSmQEsNtfl1KHGfp/FWZYl48bI/g7cgBeP2IlPthjiVngw==

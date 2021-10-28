@@ -2,8 +2,10 @@ import { ethers } from 'ethers';
 import NonFungibleApesArtifact from "../build/contracts/NonFungibleApes.json";
 import { getSigner } from './networks';
 import nfaDataArray from '../info/apesData.json';
-import { writeJSONToFileWithDate } from '../lib/fileHandler';
+import { writeJSONToFileWithDate } from './helpers/fileHandler';
+import { getNfaOwnerArray } from './helpers/importApeData'
 
+const owners: string[] = new Array(1000);
 const unMintedTokens: any[] = [];
 const txs: any[] = [];
 
@@ -105,6 +107,9 @@ const mintNfa = async (nfaContract: ethers.Contract, id: number, toAddress: stri
 
         }
 
+        const ownerAddress = await nfaContract.ownerOf(id);
+        owners[id] = ownerAddress;
+
         return apeDataCheck;
     } catch (e) {
         unMintedTokens.push({
@@ -135,6 +140,7 @@ interface ApeData {
 }
 
 const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSize = 30) => {
+    const nfaOwnerArray = await getNfaOwnerArray(`./output/nfaOwners-final.json`);
     // Nonce manager encapsules a signer. It can be used to manually increment the nonce on each tx
     const signer = getSigner(chainId);
     const signerAddress = await signer.getAddress();
@@ -151,7 +157,7 @@ const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSiz
     let batch = [];
     let nonce = await signer.getTransactionCount();
     for (let i = 0; i < nfaDataArray.length; i++) {
-        batch.push(mintNfa(nfaContract, i, signerAddress, nonce));
+        batch.push(mintNfa(nfaContract, i, nfaOwnerArray[i], nonce));
         nonce++;
         if (i > 0 && (i % batchSize == 0 || i == nfaDataArray.length - 1)) {
             const batchData = await Promise.all(batch);
@@ -161,16 +167,17 @@ const mintAllNfas = async (chainId: number, nfaContractAddress: string, batchSiz
     };
 
     // Write output: 
-    await writeJSONToFileWithDate(__dirname + '/output/apeDataCheck', apeDataChecks.sort((apeA, apeB) => (apeA as any).index > (apeB as any).index ? 1 : -1 )); // Sort acs
-    await writeJSONToFileWithDate(__dirname + '/output/txs', txs.sort((txA, txB) => txA.nfaId > txB.nfaId ? 1 : -1 )); // Sort acs
-    await writeJSONToFileWithDate(__dirname + '/output/unmintedTokens', unMintedTokens.sort((indexA, indexB) => indexA > indexB ? 1 : -1 )); // Sort acs
+    await writeJSONToFileWithDate(__dirname + '/output/ownersOfNfaId', Object.assign({}, owners));
+    await writeJSONToFileWithDate(__dirname + '/output/apeDataCheck', apeDataChecks.sort((apeA, apeB) => (apeA as any).index > (apeB as any).index ? 1 : -1)); // Sort acs
+    await writeJSONToFileWithDate(__dirname + '/output/txs', txs.sort((txA, txB) => txA.nfaId > txB.nfaId ? 1 : -1)); // Sort acs
+    await writeJSONToFileWithDate(__dirname + '/output/unmintedTokens', unMintedTokens.sort((indexA, indexB) => indexA > indexB ? 1 : -1)); // Sort acs
 };
 
 (async function () {
     try {
         // TODO: Set chainIds
-        // await mintAllNfas(0, "0xFe14FA95364A8B74f0d3F5b90426229Ea22a6874", 50); // dev
-        await mintAllNfas(97, '0xB40EB000b14f4643B11fc055EA2C27CAA23C914c', 30); // bsc-testnet //TODO: Fresh contract deployed
+        await mintAllNfas(0, "0xFe14FA95364A8B74f0d3F5b90426229Ea22a6874", 100); // dev
+        // await mintAllNfas(97, '0xB40EB000b14f4643B11fc055EA2C27CAA23C914c', 30); // bsc-testnet //TODO: Fresh contract deployed
         console.log('🎉');
         process.exit(0);
     } catch (e) {
