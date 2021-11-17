@@ -1,4 +1,4 @@
-const NonFungibleApes = artifacts.require("NonFungibleApes");
+const NonFungibleApesV2 = artifacts.require("NonFungibleApesV2");
 const { getDeployConfig } = require("../deploy-config");
 
 
@@ -8,8 +8,8 @@ module.exports = async function (deployer, network, accounts) {
 
   // Deploy NFA Contract
   // constructor(string memory name, string memory symbol, string memory baseTokenURI) ERC721(name, symbol) {
-  await deployer.deploy(NonFungibleApes, name, symbol, baseTokenURI, { from: deployerAccount });
-  const nfaContract = await NonFungibleApes.at(NonFungibleApes.address);
+  await deployer.deploy(NonFungibleApesV2, name, symbol, baseTokenURI, { from: deployerAccount });
+  const nfaContract = await NonFungibleApesV2.at(NonFungibleApesV2.address);
 
   let adminHasAdminRole;
   let adminHasMinterRole;
@@ -30,11 +30,12 @@ module.exports = async function (deployer, network, accounts) {
     // Renounce admin from deployer
     await nfaContract.renounceRole(DEFAULT_ADMIN_ROLE, deployerAccount, { from: deployerAccount });
     await nfaContract.renounceRole(MINTER_ROLE, deployerAccount, { from: deployerAccount });
+
     // Verify results
-    const adminHasAdminRole = await nfaContract.hasRole(DEFAULT_ADMIN_ROLE, admin, { from: deployerAccount });
-    const adminHasMinterRole = await nfaContract.hasRole(MINTER_ROLE, admin, { from: deployerAccount });
-    const deployerHasAdminRole = await nfaContract.hasRole(DEFAULT_ADMIN_ROLE, deployerAccount, { from: deployerAccount });
-    const deployerHasMinterRole = await nfaContract.hasRole(MINTER_ROLE, deployerAccount, { from: deployerAccount });
+    adminHasAdminRole = await nfaContract.hasRole(DEFAULT_ADMIN_ROLE, admin, { from: deployerAccount });
+    adminHasMinterRole = await nfaContract.hasRole(MINTER_ROLE, admin, { from: deployerAccount });
+    deployerHasAdminRole = await nfaContract.hasRole(DEFAULT_ADMIN_ROLE, deployerAccount, { from: deployerAccount });
+    deployerHasMinterRole = await nfaContract.hasRole(MINTER_ROLE, deployerAccount, { from: deployerAccount });
   }
 
   // Log/verify results

@@ -1,3 +1,11 @@
+/**
+ * Setup deployment variables based on network. Intended to be passed from a truffle migration
+ * script.
+ * 
+ * @param {*} network The network name passed from truffle
+ * @param {*} accounts The accounts array passed from truffle
+ * @returns NetworkConfig
+ */
 function getDeployConfig(network, accounts) {
     if (["bsc", "bsc-fork"].includes(network)) {
         console.log(`Deploying with BSC MAINNET config.`)
@@ -10,8 +18,7 @@ function getDeployConfig(network, accounts) {
     } else if (['bsc-testnet', 'bsc-testnet-fork'].includes(network)) {
         console.log(`Deploying with BSC testnet config.`)
         return {
-            // admin: "0xE375D169F8f7bC18a544a6e5e546e63AD7511581", // Testnet
-            admin: "", // Testnet
+            admin: "0xE375D169F8f7bC18a544a6e5e546e63AD7511581", // Testnet
             name: "Non Fungible Apes", 
             symbol: "NFAv2", 
             baseTokenURI: "ipfs://QmWxfSboc5r9oywP1wj6a8aVHNTor5UNJ8Kpz4YDKia8rf/",
